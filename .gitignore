@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.pyo
+*.pyd
+*.env
+.env
+.venv
+venv/
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# macOS
+.DS_Store
+
+# Matplotlib cache
+.matplotlib/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Dash assets (if dynamically generated)
+assets/*.map
+assets/*.js.LICENSE.txt
+
+# Bytecode / profiling
+*.prof
+*.cprof
+
+# Test/coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Build artifacts
+dist/
+build/
+*.whl
+
+# Project folders
+.idea/
