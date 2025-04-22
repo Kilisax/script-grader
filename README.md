@@ -1,4 +1,4 @@
-# cbp-uebungen
+# Script Grader
 
 A Dash-based app to support grading and reviewing Python programming assignments. It is especially helpful for courses involving scientific computing, plots, or interactive results.
 
