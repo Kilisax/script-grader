@@ -359,7 +359,11 @@ def update_python_file(points, comments, matrikel, exercise):
 
         # Add updated comments after the grading line
         if comments:
-            comment_lines = [line if line.endswith("\n") else line + "\n" for line in comments.splitlines()]
+            if isinstance(comments, list):
+                comment_lines = [line if line.endswith("\n") else line + "\n" for line in comments]
+            else:
+                comment_lines = [line if line.endswith("\n") else line + "\n" for line in comments.splitlines()]
+            # comment_lines = [line if line.endswith("\n") else line + "\n" for line in comments.splitlines()]
             new_lines.extend(comment_lines)
 
         with open(full_py_filename, "w") as f:
