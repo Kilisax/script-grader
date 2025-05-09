@@ -141,7 +141,7 @@ for file in files_in_folder:
     if file.endswith("py") or file.endswith("tex") or file.endswith("pdf"):
         matrikelnummern += [file.split("_A")[0]]
         aufgabenzahl += [int(file.split("_A")[1][0])]
-matrikelnummern = list(set(matrikelnummern))
+matrikelnummern = sorted(list(set(matrikelnummern)))
 aufgabenanzahl = max(aufgabenzahl)
 abgaben_tab = dmc.Center(
     [
