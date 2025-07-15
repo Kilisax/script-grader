@@ -22,5 +22,5 @@ Clone the repo and install locally:
 
 ```bash
 git clone https://github.com/Kilisax/script-grader.git
-cd cbp-uebungen
+cd script-grader/
 pip install .

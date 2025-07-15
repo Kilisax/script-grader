@@ -82,7 +82,9 @@ def execute_student_script(filename):
     for leftover in code_output_chunks:
         components.append(html.Pre(leftover))
 
-    return html.Div(components)
+    return html.Div(components, style = {
+        "overflowX": 'scroll'
+    })
 
 def display_python_code(filename):
     try:
@@ -168,33 +170,39 @@ python_solution_files = [
 
 app.layout = dmc.MantineProvider(
     theme=theme,
-    children=html.Div(
-        dmc.Tabs(
-            [
-                dmc.TabsList(
-                    [
-                        dmc.TabsTab("Abgaben", value="abgaben"),
-                        dmc.TabsTab("Musterlösung", value="musterloesung"),
-                    ],
-                    grow=True,
-                ),
-                dmc.TabsPanel([abgaben_tab, html.Div(id="abgaben_children")], value="abgaben"),
-                dmc.TabsPanel(
-                    [
-                        dmc.Center(
-                            dmc.Select(
-                                data=[{"value": str(i), "label": str(i)} for i in range(1,len(python_solution_files)+1)], 
-                                id = "solution_selection",
-                                label = "Aufgabe auswählen"
-                            )
-                        ),
-                        html.Div(id="solution_children")
-                    ],
-                value="musterloesung")
-            ],
-            value="abgaben"
+    children=[
+        html.Div(
+            dmc.Tabs(
+                [
+                    dmc.TabsList(
+                        [
+                            dmc.TabsTab("Abgaben", value="abgaben"),
+                            dmc.TabsTab("Musterlösung", value="musterloesung"),
+                        ],
+                        grow=True,
+                    ),
+                    dmc.TabsPanel([abgaben_tab, html.Div(id="abgaben_children")], value="abgaben"),
+                    dmc.TabsPanel(
+                        [
+                            dmc.Center(
+                                dmc.Select(
+                                    data=[{"value": str(i), "label": str(i)} for i in range(1,len(python_solution_files)+1)], 
+                                    id = "solution_selection",
+                                    label = "Aufgabe auswählen"
+                                )
+                            ),
+                            html.Div(id="solution_children")
+                        ],
+                    value="musterloesung")
+                ],
+                value="abgaben"
+            )
+        ),
+        dcc.Store(
+            data = {nummer: 0 for nummer in matrikelnummern},
+            id = "points-memory"
         )
-    )
+    ]
 )
 
 
@@ -327,14 +335,16 @@ def update_abgaben_layout(matrikel, exercise):
 @callback(
     Output("points-input", "value"),
     Output("code_children", "children"),
+    Output("points-memory", "data"),
     Input("points-input", "value"),
     Input("comments-input", "value"),
     State("matrikel_selection", "value"),
     State("exercise_selection", "value"),
+    State("points-memory", "data")
 )
-def update_python_file(points, comments, matrikel, exercise):
+def update_python_file(points, comments, matrikel, exercise, current_points):
     if not matrikel or not exercise:
-        return no_update, no_update
+        return no_update, no_update, no_update
 
     py_filename = f"{matrikelnummern[int(matrikel)]}_A{exercise}.py"
     full_py_filename = os.path.join(selected_folder_path, py_filename)
@@ -373,9 +383,18 @@ def update_python_file(points, comments, matrikel, exercise):
 
     except Exception as e:
         print(f"Error updating file: {e}")
-        return no_update, no_update
+        return no_update, no_update, no_update
 
-    return points, updated_code_content
+    current_points[matrikelnummern[int(matrikel)]] += points 
+    return points, updated_code_content, current_points
+
+# @callback(
+#     Output("matrikel_selection", "data"),
+#     Input("points-memory", "data")
+# )
+# def points_display(current_points):
+#     print(current_points)
+#     return [{"value": str(i), "label": f"{m.split('_U')[0]}  |  {current_points[m]}"} for i,m in enumerate(matrikelnummern)]
 
 if __name__ == '__main__':
     app.run(debug=True)
